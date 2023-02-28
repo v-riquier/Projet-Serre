@@ -5,7 +5,12 @@
 #include <QTcpSocket>
 #include <QTimer>
 #include <QNetworkAccessManager>
+#include <QNetworkReply>
 #include <QUrl>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonValue>
 
 class Projetserre : public QMainWindow
 {
@@ -25,10 +30,11 @@ public slots:
 	void receiveData();
 
 private:
-	/*float calculHumidite(int);
-	void problemes();*/
+	/*float calculHumidite(int);*/
+	void problemes();
     Ui::ProjetserreClass ui;
 	QTcpSocket* socket;
 	QString ip = "192.168.65.8";
 	quint16 port = 502;
+	QJsonObject donneesJson;
 };

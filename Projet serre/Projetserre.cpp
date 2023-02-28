@@ -10,7 +10,6 @@ Projetserre::Projetserre(QWidget* parent)
 	QObject::connect(socket, SIGNAL(readyRead()), this, SLOT(receiveData()));
 	/*
 	chercher envoi http post url("http:"//server/fichier.php")
-	chercher formattage données en JSON
 	*/
 }
 
@@ -62,6 +61,11 @@ void Projetserre::receiveData()
 	QString affHumid = QString::number(humidite) + "%";
 	ui.lblTemp->setText(affTemp);
 	ui.lblHumid->setText(affHumid);
+	QJsonValue jsonTemp(affTemp);
+	QJsonValue jsonHumid(affHumid);
+	donneesJson.insert("Humidité", jsonHumid);
+	donneesJson.insert("Temperature", jsonTemp);
+	qDebug() << donneesJson;
 }
 
 float Projetserre::QByteArrayToFloat(QByteArray arr)
@@ -79,29 +83,32 @@ float Projetserre::QByteArrayToFloat(QByteArray arr)
 }
 
 /*float Projetserre::calculHumidite(int Vout) {
-	float humid = -1.91 * pow(10,-9) * pow(Vout,3);
-	humid += 1.33 * pow(10,-5) * pow(Vout,2);
-	humid += 9.56 * pow(10,-3) * Vout;
-	humid -= 2.16 * pow(10,1);
+	float humid = -1.91 * pow(10, -9) * pow(Vout, 3);
+	humid += 1.33 * pow(10, -5) * pow(Vout, 2);
+	humid += 9.56 * pow(10, -3) * Vout;
+	humid -= 2.16 * pow(10, 1);
 	return humid;
-}
+}*/
 
 void Projetserre::problemes()
 {
-	QNetworkAccessManager* manager = new QNetworkAccessManager(this);
-
-	QUrl url("http:///192.168.64.158/Serre/fonctions/api.php");
+	QNetworkAccessManager* mgr = new QNetworkAccessManager(this);
+	const QUrl url(QStringLiteral("http:/192.168.64.158/Serre/fonctions/api.json"));
 	QNetworkRequest request(url);
+	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+	QJsonDocument document(donneesJson);
+	QByteArray donnees = document.toJson();
+	QNetworkReply* reply = mgr->post(request, donnees);
 
-	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-
-	QUrl params;
-	params.setQuery("client_id");
-	params.setQuery("client_secret");
-	params.setQuery("code");
-	// etc
-
-	QObject::connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinished(QNetworkReply*)));
-
-	manager->post(request, params.query(QUrl::FullyEncoded).toLatin1());
-}*/
+	QObject::connect(reply, &QNetworkReply::finished, [=]() {
+		if (reply->error() == QNetworkReply::NoError) {
+			QString contents = QString::fromUtf8(reply->readAll());
+			qDebug() << contents;
+		}
+		else {
+			QString err = reply->errorString();
+			qDebug() << err;
+		}
+	reply->deleteLater();
+		});
+}
