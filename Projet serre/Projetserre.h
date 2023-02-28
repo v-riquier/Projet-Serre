@@ -14,6 +14,7 @@ class Projetserre : public QMainWindow
 public:
     Projetserre(QWidget *parent = nullptr);
     ~Projetserre();
+	float QByteArrayToFloat(QByteArray arr);
 
 public slots:
 	void onConnectButtonClicked();

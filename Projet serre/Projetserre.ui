@@ -53,19 +53,6 @@
      <string>données</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lblDonnees">
-    <property name="geometry">
-     <rect>
-      <x>180</x>
-      <y>220</y>
-      <width>281</width>
-      <height>101</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
    <widget class="QLabel" name="lblConnect">
     <property name="geometry">
      <rect>
@@ -103,6 +90,58 @@
     </property>
     <property name="text">
      <string>Collecte</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="nlblTemp">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>220</y>
+      <width>81</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Température :</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblTemp">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>220</y>
+      <width>151</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="nlblHumid">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>280</y>
+      <width>51</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Humidité :</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="lblHumid">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>280</y>
+      <width>171</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>

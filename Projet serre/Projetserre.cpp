@@ -43,7 +43,7 @@ void Projetserre::onSocketDisconnected()
 void Projetserre::AffichageDonnees()
 {
 	if (socket->state() == QAbstractSocket::ConnectedState) {
-		char trame[] = { 0x00, 0x01, 0x00, 0x00, 0x00, 0x06, 0x11, 0x03, 0x46, 0xB4, 0x00, 0x20 };
+		char trame[] = { 0x00, 0x01, 0x00, 0x00, 0x00, 0x06, 0x11, 0x03, 0x4D, 0x58, 0x00, 0x04 };
 		QByteArray data(trame, 12);
 		socket->write(data);
 		socket->flush();
@@ -53,7 +53,29 @@ void Projetserre::AffichageDonnees()
 void Projetserre::receiveData()
 {
 	QByteArray data = socket->readAll();
-	ui.lblDonnees->setText(data);
+	data = data.right(8);//prend les 8 derniers caracteres
+	QByteArray temp = data.left(4);//prend les 4 premiers caracteres
+	QByteArray humid = data.right(4);
+	float temperature = QByteArrayToFloat(temp);
+	float humidite = QByteArrayToFloat(humid);
+	QString affTemp = QString::number(temperature) + "°C";
+	QString affHumid = QString::number(humidite) + "%";
+	ui.lblTemp->setText(affTemp);
+	ui.lblHumid->setText(affHumid);
+}
+
+float Projetserre::QByteArrayToFloat(QByteArray arr)
+{
+	static_assert(std::numeric_limits<float>::is_iec559, "Only supports IEC 559 (IEEE 754) float");
+
+	quint32 temp = ((quint8)arr[0] << 24) | ((quint8)arr[1] << 16) | ((quint8)arr[2] << 8) | (quint8)arr[3];
+	//La variable temp est un entier de 32 bits, arr est un tableau de 4 cases d'entiers de 8 bits.
+	//En partant de la fin, le programme place arr[0] au bit 24 puis arr[0] au bit 16 puis arr[0] au bit 8 et arr[0] au bit 0
+
+	float* out = reinterpret_cast<float*>(&temp);
+	//le compilateur va forcer la transformation d'un quint32 en float
+
+	return *out;
 }
 
 /*float Projetserre::calculHumidite(int Vout) {
