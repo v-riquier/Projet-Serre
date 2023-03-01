@@ -5,16 +5,34 @@ Projetserre::Projetserre(QWidget* parent)
 {
 	ui.setupUi(this);
 	socket = new QTcpSocket(this);
+	wSocketServer = new QWebSocketServer(QStringLiteral("Server WebSocket"), QWebSocketServer::NonSecureMode);
 	QObject::connect(socket, SIGNAL(connected()), this, SLOT(onSocketConnected()));
 	QObject::connect(socket, SIGNAL(disconnected()), this, SLOT(onSocketDisconnected()));
 	QObject::connect(socket, SIGNAL(readyRead()), this, SLOT(receiveData()));
-	/*
-	chercher envoi http post url("http:"//server/fichier.php")
-	*/
+
+	if (this->wSocketServer->listen(QHostAddress::AnyIPv4, 12345))
+	{
+		qDebug() << "Server WebSocket: Nouvelle connexion sur le port 12345" << "\n";
+
+		QObject::connect(wSocketServer, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
+	}
+	else
+	{
+		qDebug() << "Server WebSocket: Erreur d'ecoute sur le port 12345" << "\n";
+	}
+	//chercher envoi http post url("http:"//server/fichier.php")
 }
 
 Projetserre::~Projetserre()
 {
+}
+
+void Projetserre::onNewConnection()
+{
+	wSocket = this->wSocketServer->nextPendingConnection();
+	QObject::connect(wSocket, SIGNAL(textMessageReceived(const QString&)), this, SLOT(processTextMessage(const QString&)));
+	QObject::connect(wSocket, SIGNAL(disconnected()), this, SLOT(wSocketDisconnected()));
+
 }
 
 void Projetserre::onConnectButtonClicked()
@@ -39,6 +57,11 @@ void Projetserre::onSocketDisconnected()
 	ui.lblConnect->setText("Deconnecte");
 }
 
+void Projetserre::wSocketDisconnected()
+{
+	qDebug()<< "WebSocket Deconnecte";
+}
+
 void Projetserre::AffichageDonnees()
 {
 	if (socket->state() == QAbstractSocket::ConnectedState) {
@@ -55,42 +78,21 @@ void Projetserre::receiveData()
 	data = data.right(8);//prend les 8 derniers caracteres
 	QByteArray temp = data.left(4);//prend les 4 premiers caracteres
 	QByteArray humid = data.right(4);
-	float temperature = QByteArrayToFloat(temp);
-	float humidite = QByteArrayToFloat(humid);
-	QString affTemp = QString::number(temperature) + "°C";
-	QString affHumid = QString::number(humidite) + "%";
-	ui.lblTemp->setText(affTemp);
-	ui.lblHumid->setText(affHumid);
-	QJsonValue jsonTemp(affTemp);
-	QJsonValue jsonHumid(affHumid);
-	donneesJson.insert("Humidité", jsonHumid);
-	donneesJson.insert("Temperature", jsonTemp);
-	qDebug() << donneesJson;
+	donneesJson.insert("Humidité", calc.valeurJson(temp,'H'));
+	donneesJson.insert("TempInt", calc.valeurJson(humid,'T'));
+	sendWebsocket();
 }
 
-float Projetserre::QByteArrayToFloat(QByteArray arr)
+void Projetserre::sendWebsocket()
 {
-	static_assert(std::numeric_limits<float>::is_iec559, "Only supports IEC 559 (IEEE 754) float");
-
-	quint32 temp = ((quint8)arr[0] << 24) | ((quint8)arr[1] << 16) | ((quint8)arr[2] << 8) | (quint8)arr[3];
-	//La variable temp est un entier de 32 bits, arr est un tableau de 4 cases d'entiers de 8 bits.
-	//En partant de la fin, le programme place arr[0] au bit 24 puis arr[0] au bit 16 puis arr[0] au bit 8 et arr[0] au bit 0
-
-	float* out = reinterpret_cast<float*>(&temp);
-	//le compilateur va forcer la transformation d'un quint32 en float
-
-	return *out;
+	QJsonDocument doc(donneesJson);
+	QByteArray docsend = doc.toJson();
+	QString data(docsend);
+	qDebug() << data;
+	wSocket->sendTextMessage(data);
 }
 
-/*float Projetserre::calculHumidite(int Vout) {
-	float humid = -1.91 * pow(10, -9) * pow(Vout, 3);
-	humid += 1.33 * pow(10, -5) * pow(Vout, 2);
-	humid += 9.56 * pow(10, -3) * Vout;
-	humid -= 2.16 * pow(10, 1);
-	return humid;
-}*/
-
-void Projetserre::problemes()
+/*void Projetserre::problemes()
 {
 	QNetworkAccessManager* mgr = new QNetworkAccessManager(this);
 	const QUrl url(QStringLiteral("http:/192.168.64.158/Serre/fonctions/api.json"));
@@ -111,4 +113,4 @@ void Projetserre::problemes()
 		}
 	reply->deleteLater();
 		});
-}
+}*/

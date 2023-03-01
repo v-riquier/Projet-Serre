@@ -2,8 +2,8 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_Projetserre.h"
+#include "CalculJson.h"
 #include <QTcpSocket>
-#include <QTimer>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QUrl>
@@ -11,6 +11,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QWebSocketServer>
+#include <QWebSocket>
 
 class Projetserre : public QMainWindow
 {
@@ -19,7 +21,6 @@ class Projetserre : public QMainWindow
 public:
     Projetserre(QWidget *parent = nullptr);
     ~Projetserre();
-	float QByteArrayToFloat(QByteArray arr);
 
 public slots:
 	void onConnectButtonClicked();
@@ -28,13 +29,18 @@ public slots:
 	void onSocketDisconnected();
 	void AffichageDonnees();
 	void receiveData();
+	void sendWebsocket();
+	void onNewConnection();
+	void wSocketDisconnected();
 
 private:
-	/*float calculHumidite(int);*/
-	void problemes();
+	//void problemes();
+	CalculJson calc;
     Ui::ProjetserreClass ui;
 	QTcpSocket* socket;
 	QString ip = "192.168.65.8";
 	quint16 port = 502;
 	QJsonObject donneesJson;
+	QWebSocketServer* wSocketServer;
+	QWebSocket* wSocket = nullptr;
 };

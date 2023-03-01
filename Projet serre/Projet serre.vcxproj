@@ -88,8 +88,12 @@
     <QtRcc Include="Projetserre.qrc" />
     <QtUic Include="Projetserre.ui" />
     <QtMoc Include="Projetserre.h" />
+    <ClCompile Include="CalculJson.cpp" />
     <ClCompile Include="Projetserre.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CalculJson.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
