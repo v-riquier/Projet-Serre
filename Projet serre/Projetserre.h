@@ -27,7 +27,8 @@ public slots:
 	void onDisconnectButtonClicked();
 	void onSocketConnected();
 	void onSocketDisconnected();
-	void AffichageDonnees();
+	void DonneesSensor();
+	void DonneesCapteurs();
 	void receiveData();
 	void sendWebsocket();
 	void onNewConnection();

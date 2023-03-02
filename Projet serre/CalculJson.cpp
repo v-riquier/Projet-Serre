@@ -20,7 +20,7 @@ QJsonValue CalculJson::valeurJson(QByteArray arr, char car)
 	QString affichage;
 	switch (car) {
 	case 'T':
-		affichage = QString::number(val) + "°C";
+		affichage = QString::number(val) + 0xB0 + "C"; // 0xB0 = '°'
 		break;
 	case 'H':
 		affichage = QString::number(val) + "%";

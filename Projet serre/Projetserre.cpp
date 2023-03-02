@@ -30,7 +30,6 @@ Projetserre::~Projetserre()
 void Projetserre::onNewConnection()
 {
 	wSocket = this->wSocketServer->nextPendingConnection();
-	QObject::connect(wSocket, SIGNAL(textMessageReceived(const QString&)), this, SLOT(processTextMessage(const QString&)));
 	QObject::connect(wSocket, SIGNAL(disconnected()), this, SLOT(wSocketDisconnected()));
 
 }
@@ -59,10 +58,10 @@ void Projetserre::onSocketDisconnected()
 
 void Projetserre::wSocketDisconnected()
 {
-	qDebug()<< "WebSocket Deconnecte";
+	qDebug() << "WebSocket Deconnecte";
 }
 
-void Projetserre::AffichageDonnees()
+void Projetserre::DonneesSensor()
 {
 	if (socket->state() == QAbstractSocket::ConnectedState) {
 		char trame[] = { 0x00, 0x01, 0x00, 0x00, 0x00, 0x06, 0x11, 0x03, 0x4D, 0x58, 0x00, 0x04 };
@@ -72,14 +71,41 @@ void Projetserre::AffichageDonnees()
 	}
 }
 
+void Projetserre::DonneesCapteurs()
+{
+	if (socket->state() == QAbstractSocket::ConnectedState) {
+		char trame[] = { 0x00, 0x02, 0x00, 0x00, 0x00, 0x06, 0x11, 0x03, 0x42, 0xCC, 0x00, 0x40 };
+		QByteArray data(trame, 12);
+		socket->write(data);
+		socket->flush();
+	}
+}
+
 void Projetserre::receiveData()
 {
 	QByteArray data = socket->readAll();
-	data = data.right(8);//prend les 8 derniers caracteres
-	QByteArray temp = data.left(4);//prend les 4 premiers caracteres
-	QByteArray humid = data.right(4);
-	donneesJson.insert("Humidité", calc.valeurJson(temp,'H'));
-	donneesJson.insert("TempInt", calc.valeurJson(humid,'T'));
+	char test = data[1];
+	qDebug() << data;
+	if (test == 1) {
+		qDebug() << "capteur";
+		data = data.right(8);//prend les 8 derniers caracteres
+		QByteArray temp = data.left(4);//prend les 4 premiers caracteres
+		QByteArray humid = data.right(4);
+		donneesJson.insert("Humidité", calc.valeurJson(humid, 'H'));
+		donneesJson.insert("TempInt", calc.valeurJson(temp, 'T'));
+		ui.lblHumid->setText(donneesJson.value("Humidité").toString());
+		ui.lblTemp->setText(donneesJson.value("TempInt").toString());
+	}
+	else if (test == 2) {
+		qDebug() << "analog";
+		data = data.right(8);//prend les 8 derniers caracteres
+		QByteArray temp = data.left(4);//prend les 4 premiers caracteres
+		QByteArray humid = data.right(4);
+		donneesJson.insert("Humidité1", calc.valeurJson(humid, 'H'));
+		donneesJson.insert("Humidité2", calc.valeurJson(temp, 'T'));
+		ui.lblHumid_2->setText(donneesJson.value("Humidité1").toString());
+		ui.lblHumid_3->setText(donneesJson.value("Humidité2").toString());
+	}
 	sendWebsocket();
 }
 
