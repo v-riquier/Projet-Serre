@@ -83,6 +83,7 @@ void Projetserre::DonneesCapteurs()
 
 void Projetserre::receiveData()
 {
+	CalculJson calc;
 	QByteArray data = socket->readAll();
 	char test = data[1];
 	qDebug() << data;
