@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>529</width>
+    <width>562</width>
     <height>520</height>
    </rect>
   </property>
@@ -111,7 +111,7 @@
    <widget class="QLabel" name="lblTemp">
     <property name="geometry">
      <rect>
-      <x>300</x>
+      <x>290</x>
       <y>220</y>
       <width>151</width>
       <height>21</height>
@@ -139,7 +139,7 @@
      <rect>
       <x>270</x>
       <y>260</y>
-      <width>171</width>
+      <width>151</width>
       <height>21</height>
      </rect>
     </property>
@@ -176,7 +176,7 @@
    <widget class="QLabel" name="lblHumid_2">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>230</x>
       <y>300</y>
       <width>171</width>
       <height>21</height>
@@ -202,7 +202,7 @@
    <widget class="QLabel" name="lblHumid_3">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>230</x>
       <y>340</y>
       <width>171</width>
       <height>21</height>
@@ -228,7 +228,7 @@
    <widget class="QLabel" name="lblHumid_4">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>230</x>
       <y>380</y>
       <width>171</width>
       <height>21</height>
@@ -260,7 +260,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>529</width>
+     <width>562</width>
      <height>21</height>
     </rect>
    </property>

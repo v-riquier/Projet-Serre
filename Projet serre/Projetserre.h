@@ -27,7 +27,7 @@ public slots:
 	void onDisconnectButtonClicked();
 	void onSocketConnected();
 	void onSocketDisconnected();
-	void onNewConnection();
+	void wSocketConnected();
 	void wSocketDisconnected();
 	void DonneesSensor();
 	void DonneesCapteurs();
