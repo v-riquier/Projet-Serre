@@ -127,26 +127,3 @@ void Projetserre::sendWebsocket()
 	QString data(docsend);
 	wSocket->sendTextMessage(data);
 }
-
-/*void Projetserre::problemes()
-{
-	QNetworkAccessManager* mgr = new QNetworkAccessManager(this);
-	const QUrl url(QStringLiteral("http:/192.168.64.158/Serre/fonctions/api.json"));
-	QNetworkRequest request(url);
-	request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-	QJsonDocument document(donneesJson);
-	QByteArray donnees = document.toJson();
-	QNetworkReply* reply = mgr->post(request, donnees);
-
-	QObject::connect(reply, &QNetworkReply::finished, [=]() {
-		if (reply->error() == QNetworkReply::NoError) {
-			QString contents = QString::fromUtf8(reply->readAll());
-			qDebug() << contents;
-		}
-		else {
-			QString err = reply->errorString();
-			qDebug() << err;
-		}
-	reply->deleteLater();
-		});
-}*/
