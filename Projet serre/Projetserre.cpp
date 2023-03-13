@@ -62,6 +62,8 @@ void Projetserre::wSocketDisconnected()
 void Projetserre::DonneesSensor()
 {
 	if (socket->state() == QAbstractSocket::ConnectedState) {
+		/*adresse des valeurs du sensor : 4D58
+		taille des valeurs : 4 registres = 8 octets */
 		char trame[] = { 0x00, 0x01, 0x00, 0x00, 0x00, 0x06, 0x11, 0x03, 0x4D, 0x58, 0x00, 0x04 };
 		QByteArray data(trame, 12);
 		socket->write(data);
@@ -72,7 +74,8 @@ void Projetserre::DonneesSensor()
 void Projetserre::DonneesCapteurs()
 {
 	if (socket->state() == QAbstractSocket::ConnectedState) {
-		//description =  4268 en 64 octet; valeur = 445C
+		/*adresse des valeurs des capteurs : 445C
+		taille des valeurs : 8 registres = 16 octets */
 		char trame[] = { 0x00, 0x02, 0x00, 0x00, 0x00, 0x06, 0x11, 0x03, 0x44, 0x5C, 0x00, 0x08 };
 		QByteArray data(trame, 12);
 		socket->write(data);
