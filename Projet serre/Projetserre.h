@@ -1,18 +1,13 @@
 #pragma once
 
 #include <QtWidgets/QMainWindow>
-#include "ui_Projetserre.h"
-#include "CalculJson.h"
 #include <QTcpSocket>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QUrl>
-#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QJsonValue>
 #include <QWebSocketServer>
 #include <QWebSocket>
+#include "ui_Projetserre.h"
+#include "CalculJson.h"
 
 class Projetserre : public QMainWindow
 {
